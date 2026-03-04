@@ -22,16 +22,7 @@ const allowedOrigins = [
   "https://weldingfrontend.vercel.app"
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
-}));
+app.use(cors());
 
 // Serve uploads folder
 app.use("/uploads", express.static("uploads")); // ← Add this line
