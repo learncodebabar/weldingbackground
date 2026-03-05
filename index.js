@@ -18,11 +18,13 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-const allowedOrigins = [
-  "https://weldingfrontend.vercel.app"
-];
-
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://weldingfrontend.vercel.app"
+  ],
+  credentials: true
+}));
 
 // Serve uploads folder
 app.use("/uploads", express.static("uploads")); // ← Add this line
@@ -46,10 +48,13 @@ app.get("/", (req, res) => {
 // MongoDB Connection
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("✅ MongoDB Connected");
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 5000
+    });
+
+    console.log("✅ MongoDB Connected:", conn.connection.host);
   } catch (err) {
-    console.log("❌ DB Connection Error:", err.message);
+    console.error("❌ DB Connection Error:", err);
     process.exit(1);
   }
 };
